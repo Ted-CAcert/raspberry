@@ -24,6 +24,30 @@ ted_t85.build.variant=tiny
 
 ##############################################################
 
+ted_328_8.name=Tedboard ATmega328 8MHz (GPIO)
+
+ted_328_8.upload.using=gpio
+ted_328_8.upload.protocol=gpio
+ted_328_8.upload.maximum_size=32768
+ted_328_8.upload.speed=57600
+ted_328_8.upload.disable_flushing=true
+
+ted_328_8.bootloader.low_fuses=0xE2
+ted_328_8.bootloader.high_fuses=0xD9
+ted_328_8.bootloader.extended_fuses=0x07
+ted_328_8.bootloader.path=atmega
+ted_328_8.bootloader.file=ATmegaBOOT_168_gert328.hex
+ted_328_8.bootloader.unlock_bits=0x3F
+ted_328_8.bootloader.lock_bits=0x0F
+
+ted_328_8.build.mcu=atmega328p
+ted_328_8.build.f_cpu=8000000L
+ted_328_8.build.core=arduino
+ted_328_8.build.variant=standard
+
+
+##############################################################
+
 gert328.name=Gertboard with ATmega328 (GPIO)
 
 gert328.upload.using=gpio
