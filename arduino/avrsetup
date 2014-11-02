@@ -43,10 +43,12 @@ do168 () {
 echo    ""
 echo    "Initialising a new ATmega microcontroller for use with the Gertboard."
 
-while true; do
+
   echo    ""
   echo    "Make sure there is a new ATmega chip plugged in, and press"
-  echo    ".. 1 for an ATmega328p or 2 for an ATmega168, "
+
+  echo    ".. 1 for an ATmega328p 12MHz external clock"
+  echo    ".. 2 for an ATmega168"
   echo    ".. 3 for an ATmega328p using internal 8Mhz clock "
   echo -n ".. 4 for an ATtiny85 using internal 8Mhz clock: "
 
