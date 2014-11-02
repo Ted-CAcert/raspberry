@@ -1,4 +1,6 @@
-const float tf = 1.5; // 1.5 for 8MHz
+/* Factor not necessary when build.f_cpu in boards.txt is configured correctly? */
+//const float tf = 1.5; // 1.5 for 8MHz
+const float tf=1.0;
 
 const int pinPowerControl = 8; // PB0
 const int pinShutdownInit = 7; // PD7
@@ -10,15 +12,19 @@ const int PowerStatus_ON = 1;
 const int PowerStatus_InShutdown = 2;
 const int PowerStatus_OFF = 3;
 
-const long LifetickWait = 10000/tf;
+const long DefLifetickWait = 10000/tf; 
+const long BootLifetickWait = 300000/tf; // Only relevant if WatchdogArmCount == 0
+long LifetickWait = DefLifetickWait;
 const long ShutdownWait = 60000/tf;
 const long UndervoltageWait = 30000/tf;
-const long RestartWait = 5000/tf;
+const long RestartWait = 300000/tf;
 
 const int ShutdownVoltage = 830; // Reading lower than this will initiate shutdown
 const int StartupVoltage = 870;  // Reading higher than this will allow startup
 
-const int WatchdogArmCount = 5;
+// WatchdogArmCount may be > 0 in development environment...
+//const int WatchdogArmCount = 5;
+const int WatchdogArmCount = 0;
 
 unsigned long LastChange;
 int LastLevel;
@@ -52,6 +58,10 @@ void setup() {
   LastStartupVoltage=0;
   PowerCheckArmed=false;
 
+  if (WatchdogArmCount == 0) {
+    LifetickWait = BootLifetickWait;
+    LastChange=millis();
+  }
   Serial.begin(9600*tf);
   Serial.println("Started.");
 }
@@ -70,6 +80,7 @@ void CheckLifetick()
   if (CurLevel!=LastLevel && CurMilli-LastChange>100) {
     LastLevel = CurLevel;
     LastChange = CurMilli;
+    LifetickWait = DefLifetickWait;
     if (NumChanges < WatchdogArmCount*2) NumChanges++;
     if (CurLevel) {
       int i;
@@ -159,6 +170,10 @@ void DoPowerStatus()
         }
         if (DoStartup) {
           PowerOn();
+          if (WatchdogArmCount == 0) {
+            LifetickWait = BootLifetickWait;
+            LastChange=millis();
+          }
           PowerStatus = PowerStatus_ON;
           LastStatusChange = CurMilli;
           NumChanges = 0;
