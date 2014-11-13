@@ -91,8 +91,7 @@ void CheckLifetick()
       Serial.println(AnalogValue[5]);
     }
 
-    
-    if (NumChanges == WatchdogArmCount) {
+    if (WatchdogArmCount > 0 && NumChanges == WatchdogArmCount) {
       Serial.println("Watchdog armed.");
     }
   }
