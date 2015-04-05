@@ -6,6 +6,8 @@
 #define MODE_AUTO 0
 #define MODE_ON 1
 #define MODE_OFF 2
+#define MODE_T_ON 3
+#define MODE_T_OFF 4
 
 //LiquidCrystal lcd(2, 3, 4,  8, 9, 10, 11, 12, 13, 5, 6);
 LiquidCrystal lcd(8, 7, 6,   4, 3, 12, 13);
@@ -21,7 +23,7 @@ const int PinBacklight=5;
 const int PinPumpe=1;
 const long SampleMSecs = 10000;
 
-// Wnted temperatore in Celsius. Currently this cannot be changed, ToDo: extend Menu
+// Wanted temperatore in Celsius. Currently this cannot be changed, ToDo: extend Menu
 int TargetTemp = 60;
 
 volatile int Counter = 0;
@@ -31,10 +33,12 @@ int LastCount = 0;
 unsigned long LastActionTick = 0;
 unsigned long LastPumpChange;
 unsigned long LastPumpRun;
+unsigned long LastLoop = 0;
 int WantedPumpState = 0;
 int LastPush = 0;
+unsigned long RemainingTemp = 0;
 
-struct {
+struct Status_Struct {
   byte CurMode;
   byte KesselSensor[8];
   byte WasserSensor[8];
@@ -46,20 +50,51 @@ int CurItem1;
 int CurItem2;
 int CurItem3;
 
-const int NumMenu1=4;
+const int NumMenu1=6;
 const char *Menu1[] = {
   "AUTO",
   "EIN",
   "AUS",
+  "Temp. EIN",
+  "Temp. AUS",
   "EINSTELLUNGEN",
   NULL
 };
 
 const int NumMenu2=2;
 const char Menu2[][16] = {
-  { 'W', 'A', 'S', 'S', 'E', 'R', 'F', 0xF5, 'H', 'L', 'E', 'R', 0 },
-  { 'K', 'E', 'S', 'S', 'E', 'L', 'F', 0xF5, 'H', 'L', 'E', 'R', 0 },
+  { 'W', 'A', 'S', 'S', 'E', 'R', 'F', -11, 'H', 'L', 'E', 'R', 0 },
+  { 'K', 'E', 'S', 'S', 'E', 'L', 'F', -11, 'H', 'L', 'E', 'R', 0 },
   { 0 }
+};
+
+const int NumMenu2_34=24;
+const char *Menu2_34[] = {
+  "1 Stunde",
+  "2 Stunden",
+  "3 Stunden",
+  "4 Stunden",
+  "5 Stunden",
+  "6 Stunden",
+  "7 Stunden",
+  "8 Stunden",
+  "9 Stunden",
+  "10 Stunden",
+  "11 Stunden",
+  "12 Stunden",
+  "13 Stunden",
+  "14 Stunden",
+  "15 Stunden",
+  "16 Stunden",
+  "17 Stunden",
+  "18 Stunden",
+  "19 Stunden",
+  "20 Stunden",
+  "21 Stunden",
+  "22 Stunden",
+  "23 Stunden",
+  "24 Stunden",
+  NULL
 };
 
 byte SensorList[5][8];
@@ -78,7 +113,7 @@ void pinCount()
 
 void StoreStatus(uint16_t Offset)
 {
-  int i;
+  unsigned int i;
   uint8_t *pStatus = (uint8_t *)&Status;
     
   if (Offset < 2) {
@@ -128,7 +163,7 @@ void LoadStatus()
     lcd.setCursor(0, 3);    
     lcd.print("Initialisiert!");
   } else {
-    int i;
+    unsigned int i;
     uint8_t *pStatus = (uint8_t *)&Status;
     uint8_t crc;
         
@@ -146,6 +181,8 @@ void LoadStatus()
       InitStatus(Offset+sizeof(Status));
     }
   }
+  /* No temporary modes after reboot */
+  if (Status.CurMode == MODE_T_ON || Status.CurMode == MODE_T_OFF) Status.CurMode = MODE_AUTO;
 }
 
 void setup()
@@ -188,6 +225,14 @@ void OutputStatusLine(float TempW, float TempK)
       
     case MODE_OFF:
       TheLine.print("AUS");
+      break;
+
+    case MODE_T_ON:
+      TheLine.print("TEIN");
+      break;
+      
+    case MODE_T_OFF:
+      TheLine.print("TAUS");
       break;
       
     default:
@@ -256,10 +301,23 @@ void PrintMenu()
       lcd.print(TheLine);
       
     case 2:
-      if (Menu2[CurItem2][0] != 0) {
-        TheLine = Menu2[CurItem2];
+      if (CurItem1 == 3 || CurItem1 == 4) {
+        if (Menu2_34[CurItem2] != NULL) {
+          TheLine = Menu2_34[CurItem2];
+          if (RemainingTemp > 0) {
+            if (CurItem2 == (int)(RemainingTemp/3600000)) {
+              TheLine.print(" *");
+            }
+          }
+        } else {
+          TheLine = "<<<";
+        }
       } else {
-        TheLine = "<<<";
+        if (Menu2[CurItem2][0] != 0) {
+          TheLine = Menu2[CurItem2];
+        } else {
+          TheLine = "<<<";
+        }
       }
       while(TheLine.length() < 20) TheLine.print(" ");
       lcd.setCursor(0, 2);
@@ -298,10 +356,18 @@ void HandleMenu1(int SelChange)
 
 void HandleMenu2(int SelChange)
 {
-  if (SelChange > 0) {
-    if (CurItem2 < NumMenu2) CurItem2++;
-  } else if (SelChange < 0) {
-    if (CurItem2 > 0) CurItem2--;
+  if (CurItem1 == 3 || CurItem1 == 4) {
+    if (SelChange > 0) {
+      if (CurItem2 < NumMenu2_34) CurItem2++;
+    } else if (SelChange < 0) {
+      if (CurItem2 > 0) CurItem2--;
+    }
+  } else {
+    if (SelChange > 0) {
+      if (CurItem2 < NumMenu2) CurItem2++;
+    } else if (SelChange < 0) {
+      if (CurItem2 > 0) CurItem2--;
+    }
   }
 }
 
@@ -318,7 +384,7 @@ void ScanOneWireBus()
 {
   byte address[8];
   int i=0;
-  byte ok = 0, tmp = 0;
+  byte tmp = 0;
  
   NumSensors = 0;
   while (NumSensors < 5 && ow.search(address))  {
@@ -372,6 +438,8 @@ void HandleMenu(int SelChange)
           StoreStatus(0);
           break;
         case 3:
+        case 4:
+        case 5:
           CurMenu = 2;
           CurItem2 = 0;
           break;
@@ -380,17 +448,27 @@ void HandleMenu(int SelChange)
           break;
       }
     } else if (CurMenu == 2) {
-      switch(CurItem2) {
-        case 0:
-        case 1:
-          ScanOneWireBus();
-          CurMenu = 3;
-          CurItem3 = 0;
-          break;
-          
-        default:
-          CurMenu = 1;
-          break;
+      if (CurItem1 == 3 || CurItem1 == 4) {
+        if (CurItem2 < NumMenu2_34) {
+          RemainingTemp = (CurItem2+1) * 36000000;
+          Status.CurMode = CurItem1;
+          /* Do not StoreStatus for temorary modes */
+        }
+        CurMenu = 1;
+        CurItem1 = 0;
+      } else {
+        switch(CurItem2) {
+          case 0:
+          case 1:
+            ScanOneWireBus();
+            CurMenu = 3;
+            CurItem3 = 0;
+            break;
+            
+          default:
+            CurMenu = 1;
+            break;
+        }
       }
     } else if (CurMenu == 3) {
       if (CurItem3 == NumSensors) {
@@ -472,7 +550,7 @@ float ReadTemperature(byte addr[8])
 {
   byte data[12];
   int i;
-  int HighByte, LowByte, TReading, SignBit, Tc_100, Whole, Fract;
+  int HighByte, LowByte, TReading, SignBit;
   
   ow.reset();
   ow.select(addr);
@@ -538,6 +616,34 @@ void CalcPump(float TempW, float TempK)
     case MODE_OFF:
       WantedPumpState = 0;
       break;
+      
+    case MODE_T_ON:
+      if (LastLoop > 0 && LastLoop < millis()) {
+        unsigned long Delta = millis() - LastLoop;
+        if (Delta >= RemainingTemp) {
+          RemainingTemp = 0;
+          Status.CurMode = MODE_AUTO;
+        } else {
+          WantedPumpState = 1;
+          RemainingTemp -= Delta;
+        }
+      }
+      LastLoop = millis();
+      break;
+      
+    case MODE_T_OFF:
+      if (LastLoop > 0 && LastLoop < millis()) {
+        unsigned long Delta = millis() - LastLoop;
+        if (Delta >= RemainingTemp) {
+          RemainingTemp = 0;
+          Status.CurMode = MODE_AUTO;
+        } else {
+          WantedPumpState = 0;
+          RemainingTemp -= Delta;
+        }
+      }
+      LastLoop = millis();
+      break;
   }
 }
 
@@ -562,7 +668,6 @@ unsigned long LastConvStart = 0;
 unsigned long LastConvEnd = 1;
 void loop()
 {
-  int i;
   int SelChange;
   
   if (millis() < LastPumpChange) LastPumpChange = 0;
