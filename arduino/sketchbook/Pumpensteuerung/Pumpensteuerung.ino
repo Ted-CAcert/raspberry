@@ -3,6 +3,12 @@
 #include <EEPROM.h>
 #include <PString.h>
 
+/*
+  Installation:
+    Wasserfühler: 1056EEC328097
+    Kesselfühler: 10C9CFC2280B8
+*/
+
 #define MODE_AUTO 0
 #define MODE_ON 1
 #define MODE_OFF 2
@@ -480,7 +486,7 @@ void HandleMenu(int SelChange)
           for(i = 0; i < 8; i++)
             Status.WasserSensor[i] = SensorList[CurItem3][i];
           StoreStatus(0);          
-        } else if (CurItem3 == 1) {
+        } else if (CurItem2 == 1) {
           for(i = 0; i < 8; i++)
             Status.KesselSensor[i] = SensorList[CurItem3][i];
           StoreStatus(0);          
