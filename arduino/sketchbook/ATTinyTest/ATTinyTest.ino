@@ -5,8 +5,6 @@
   This example code is in the public domain.
  */
  
-// Pin 13 has an LED connected on most Arduino boards.
-// give it a name:
 int led1 = 3;
 int led2 = 4;
 
@@ -17,16 +15,35 @@ void setup() {
   pinMode(led2, OUTPUT);     
 }
 
+void pulse() {
+  int i;
+  for(i = 0; i < 256; i++) {
+    analogWrite(led2, i);
+    analogWrite(led1, 255-i);
+    delay(4);
+  }
+  for(i = 255; i >= 0; i--) {
+    analogWrite(led2, i);
+    analogWrite(led1, 255-i);
+    delay(4);
+  }
+}
+
+void blink()
+{
+    digitalWrite(led2, HIGH);   // turn the LED on (HIGH is the voltage level)
+    digitalWrite(led1, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(500);               // wait for a second
+    digitalWrite(led1, LOW);    // turn the LED off by making the voltage LOW
+    delay(500);
+    digitalWrite(led2, LOW);    // turn the LED off by making the voltage LOW
+    digitalWrite(led1, HIGH);    // turn the LED off by making the voltage LOW
+    delay(500);               // wait for a second
+    digitalWrite(led1, LOW);    // turn the LED off by making the voltage LOW
+    delay(500);               // wait for a second  
+}
 // the loop routine runs over and over again forever:
 void loop() {
-  digitalWrite(led1, HIGH);   // turn the LED on (HIGH is the voltage level)
-  digitalWrite(led2, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(500);               // wait for a second
-  digitalWrite(led2, LOW);    // turn the LED off by making the voltage LOW
-  delay(500);
-  digitalWrite(led1, LOW);    // turn the LED off by making the voltage LOW
-  digitalWrite(led2, HIGH);    // turn the LED off by making the voltage LOW
-  delay(500);               // wait for a second
-  digitalWrite(led2, LOW);    // turn the LED off by making the voltage LOW
-  delay(500);               // wait for a second  
+  pulse();
+  blink();
 }
