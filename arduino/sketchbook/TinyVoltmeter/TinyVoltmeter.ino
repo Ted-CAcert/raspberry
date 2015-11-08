@@ -1,4 +1,4 @@
-int InPin = 1;
+int InPin = 1; // ADC1 is Pin 7 / PB2 on ATTiny85
 int OutPin = 4;
 int ClockPin = 3;
 
