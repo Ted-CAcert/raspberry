@@ -17,6 +17,7 @@ char *ValStrings[] = {
 void setup()
 {
   Serial.begin(9600);
+  
   Serial.println("\r\nReady.");
   CmdLine[CmdByte] = 0;
   pinMode(9, OUTPUT);
