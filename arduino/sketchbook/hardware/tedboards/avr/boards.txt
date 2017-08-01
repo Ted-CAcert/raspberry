@@ -1,0 +1,70 @@
+##############################################################
+
+ted_328_8.name=ATmega328 @ 8MHz
+
+ted_328_8.build.mcu=atmega328p
+ted_328_8.build.f_cpu=8000000L
+ted_328_8.build.board=TED_382_8
+ted_328_8.build.core=arduino
+ted_328_8.build.variant=standard
+
+ted_328_8.upload.tool=avrdude
+ted_328_8.upload.using=gpio
+ted_328_8.upload.protocol=gpio
+ted_328_8.upload.maximum_size=32768
+ted_328_8.upload.speed=57600
+ted_328_8.upload.disable_flushing=true
+
+ted_328_8.bootloader.low_fuses=0xE2
+ted_328_8.bootloader.high_fuses=0xD9
+ted_328_8.bootloader.extended_fuses=0x07
+ted_328_8.bootloader.path=atmega
+#ted_328_8.bootloader.file=ATmegaBOOT_168_gert328.hex
+ted_328_8.bootloader.file=atmega/ATmegaBOOT_168_atmega328.hex
+ted_328_8.bootloader.unlock_bits=0x3F
+ted_328_8.bootloader.lock_bits=0x0F
+
+##########################################################################
+# Tip: For ATTiny the ATtiny package from 
+# https://raw.githubusercontent.com/damellis/attiny/ide-1.6.x-boards-manager/package_damellis_attiny_index.json 
+# is probably the better solution.
+#
+# Playing around here nevertheless...
+
+attiny85at8.name=ATtiny85 @ 8 MHz
+
+# The following do NOT work...
+# attiny85at8.upload.using=avrispv2
+# attiny85at8.upload.using=Pololu USB AVR Programmer
+
+# The following DO work (pick one)...
+# attiny85at8.upload.using=arduino:arduinoisp
+# attiny85at8.upload.protocol=avrispv2
+# attiny85at8.upload.using=pololu
+
+attiny85at8.upload.tool=avrdude
+attiny85at8.upload.using=gpio
+attiny85at8.upload.protocol=gpio
+attiny85at8.upload.disable_flushing=true
+
+attiny85at8.upload.maximum_size=8192
+
+# Default clock (slowly rising power; long delay to clock; 8 MHz internal)
+# Int. RC Osc. 8 MHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 64 ms; [CKSEL=0010 SUT=10]; default value
+# Brown-out detection disabled; [BODLEVEL=111]
+# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
+
+attiny85at8.bootloader.tool=avrdude
+attiny85at8.bootloader.low_fuses=0xE2
+attiny85at8.bootloader.high_fuses=0xD7
+attiny85at8.bootloader.extended_fuses=0xFF
+attiny85at8.bootloader.path=empty
+attiny85at8.bootloader.file=empty/empty85at8.hex
+attiny85at8.bootloader.unlock_bits=0xff
+attiny85at8.bootloader.lock_bits=0xff
+
+
+attiny85at8.build.mcu=attiny85
+attiny85at8.build.board=TED_TINY_8
+attiny85at8.build.f_cpu=8000000L
+attiny85at8.build.core=tiny

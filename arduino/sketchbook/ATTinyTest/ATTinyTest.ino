@@ -1,9 +1,15 @@
 /*
-  Blink
-  Turns on an LED on for one second, then off for one second, repeatedly.
+  Blink variation
  
   This example code is in the public domain.
  */
+
+#include <SoftwareSerial.h>
+/* Software Serial on MISO/MOSI-Pins of ATtiny85, so I can easily use the Buspirate to check it... 
+ * MOSI-Pin: 0
+ * MISO-Pin: 1
+*/
+SoftwareSerial mySerial(0, 1);
  
 int led1 = 3;
 int led2 = 4;
@@ -12,7 +18,8 @@ int led2 = 4;
 void setup() {                
   // initialize the digital pin as an output.
   pinMode(led1, OUTPUT);     
-  pinMode(led2, OUTPUT);     
+  pinMode(led2, OUTPUT);
+  mySerial.begin(9600);
 }
 
 void pulse() {
@@ -45,5 +52,7 @@ void blink()
 // the loop routine runs over and over again forever:
 void loop() {
   pulse();
+  mySerial.print("A");
   blink();
+  mySerial.print("B");
 }

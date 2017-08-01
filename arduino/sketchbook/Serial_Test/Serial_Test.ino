@@ -18,7 +18,7 @@ void setup()
 {
   Serial.begin(9600);
   
-  Serial.println("\r\nReady.");
+  Serial.println("\r\nSerial_Test Ready.");
   CmdLine[CmdByte] = 0;
   pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
