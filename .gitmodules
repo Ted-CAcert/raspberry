@@ -1,0 +1,3 @@
+[submodule "arduino/sketchbook/hardware/damellis/attiny"]
+	path = arduino/sketchbook/hardware/damellis/attiny
+	url = https://github.com/Ted-CAcert/attiny.git
