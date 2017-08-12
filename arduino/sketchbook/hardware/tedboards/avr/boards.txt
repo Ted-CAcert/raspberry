@@ -1,28 +1,39 @@
+menu.clock=Clock
+
 ##############################################################
 
-ted_328_8.name=ATmega328 @ 8MHz
+ted_328.name=ATmega328
 
-ted_328_8.build.mcu=atmega328p
-ted_328_8.build.f_cpu=8000000L
-ted_328_8.build.board=TED_382_8
-ted_328_8.build.core=arduino
-ted_328_8.build.variant=standard
+ted_328.build.mcu=atmega328p
+ted_328.build.board=TED_382
+ted_328.build.core=arduino
+ted_328.build.variant=standard
 
-ted_328_8.upload.tool=avrdude
-ted_328_8.upload.using=gpio
-ted_328_8.upload.protocol=gpio
-ted_328_8.upload.maximum_size=32768
-ted_328_8.upload.speed=57600
-ted_328_8.upload.disable_flushing=true
+ted_328.upload.tool=avrdude
+ted_328.upload.using=gpio
+ted_328.upload.protocol=gpio
+ted_328.upload.maximum_size=32768
+ted_328.upload.speed=57600
+ted_328.upload.disable_flushing=true
 
-ted_328_8.bootloader.low_fuses=0xE2
-ted_328_8.bootloader.high_fuses=0xD9
-ted_328_8.bootloader.extended_fuses=0x07
-ted_328_8.bootloader.path=atmega
-#ted_328_8.bootloader.file=ATmegaBOOT_168_gert328.hex
-ted_328_8.bootloader.file=atmega/ATmegaBOOT_168_atmega328.hex
-ted_328_8.bootloader.unlock_bits=0x3F
-ted_328_8.bootloader.lock_bits=0x0F
+ted_328.bootloader.path=atmega
+#ted_328.bootloader.file=ATmegaBOOT_168_gert328.hex
+ted_328.bootloader.file=atmega/ATmegaBOOT_168_atmega328.hex
+ted_328.bootloader.unlock_bits=0x3F
+ted_328.bootloader.lock_bits=0x0F
+
+ted_328.menu.clock.internal8=Internal 8 MHz
+ted_328.menu.clock.internal8.bootloader.low_fuses=0xe2
+ted_328.menu.clock.internal8.bootloader.high_fuses=0xd9
+ted_328.menu.clock.internal8.bootloader.extended_fuses=0xff
+ted_328.menu.clock.internal8.build.f_cpu=8000000L
+
+ted_328.menu.clock.external12=12 MHz Full Swing Ceramic Slow
+ted_328.menu.clock.external12.bootloader.low_fuses=0xb7
+ted_328.menu.clock.external12.bootloader.high_fuses=0xd9
+ted_328.menu.clock.external12.bootloader.extended_fuses=0xff
+ted_328.menu.clock.external12.build.f_cpu=12000000L
+
 
 ##########################################################################
 # Tip: For ATTiny the ATtiny package from 
