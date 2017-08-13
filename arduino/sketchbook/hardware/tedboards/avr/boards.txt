@@ -16,6 +16,7 @@ ted_328.upload.maximum_size=32768
 ted_328.upload.speed=57600
 ted_328.upload.disable_flushing=true
 
+ted_328.bootloader.tool=arduino:avrdude
 ted_328.bootloader.path=atmega
 #ted_328.bootloader.file=ATmegaBOOT_168_gert328.hex
 ted_328.bootloader.file=atmega/ATmegaBOOT_168_atmega328.hex

@@ -1,3 +1,17 @@
+/* Using an ATmega 328 on a breadboard with minimal circutry at 3.3V
+ * ESP 8266 in an ESP-01 module connected to physical pins 2 and 3 (hardware USART RXD and TXD)
+ * Sofware serial on pins physical pins 5 and 6 talking to a FTDI232 USB serial as
+ * control/debug port
+ *  
+ * In my tests with 8 MHz internal oscillator communication with ESP8266 did not work. 
+ * If the ESP did send more than one byte only the first byte was received OK, an other were garbled.
+ *  
+ * With an external 12 MHz ceramic resonator receiving works fine. It looks like 8 MHz is to slow for
+ * 115.2 kBaud on hardware USART?
+ * Software serial did work at 19200 Baud at 8 MHz.
+ * 
+ */
+
 #include <SoftwareSerial.h>
 
 #define INBUF_SIZE 100
@@ -14,7 +28,12 @@ char InBuf[INBUF_SIZE];
 
 
 void setup() {
-  mySerial.begin(9600);
+//  mySerial.begin(9600);
+  mySerial.begin(19200); // Maximum for 8 MHz clock?
+//  mySerial.begin(38400);
+//  mySerial.begin(57600);
+//  mySerial.begin(115200); // 12 MHz clock seems to support 115 kBaud
+  
   mySerial.println("\r\nWLAN_ESP8266_Test");
   mySerial.print(__DATE__);
   mySerial.print(" ");
@@ -65,8 +84,8 @@ void loop() {
   do {
     while (Serial.available()) {
 //      InBuf[in_w++] = Serial.read();
-      Serial.read();
-      InBuf[in_w++] = '.';
+      c = Serial.read();
+      InBuf[in_w++] = c;
       if (in_w >= INBUF_SIZE) in_w = 0;
       utics=micros();
     }
