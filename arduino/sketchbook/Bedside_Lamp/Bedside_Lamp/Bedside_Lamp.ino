@@ -127,11 +127,7 @@ void loop() {
     // Button is not pressed
     if (PushDownTick > 0) {
       // Just released the button
-      if (Status==STAT_STARTING) {
-        Status=STAT_ON;
-      } else if (Status==STAT_STOPPING) {
-        Status=STAT_OFF;
-      } else if (Status==STAT_ON) {
+      if (Status==STAT_ON) {
         if (millis()-PushDownTick <= 150) {
           // Short push when running: turn off
           TurnOff();
@@ -139,6 +135,11 @@ void loop() {
       }
       PushDownTick = 0;
     }
+    if (Status==STAT_STARTING) {
+      Status=STAT_ON;
+    } else if (Status==STAT_STOPPING) {
+      Status=STAT_OFF;
+    }    
   }
 
   /* Half light level after 1 hour inactivity, turn off after 2 hours */
@@ -153,14 +154,15 @@ void loop() {
   }
   
   /* Set the light levels */
-  if (SideMod >= 0) {
+  if (SideMod == 0) {
     analogWrite(led1, FlagIdle ? LightLevel/2 : LightLevel);
-//    analogWrite(led2, LightLevel);
+    analogWrite(led2, FlagIdle ? LightLevel/2 : LightLevel);
+  } else if (SideMod > 0) {
+    analogWrite(led1, FlagIdle ? LightLevel/2 : LightLevel);
     analogWrite(led2, FlagIdle ? (LightLevel*(10-SideMod))/20 : (LightLevel*(10-SideMod))/10);
   } else {
     analogWrite(led2, FlagIdle ? LightLevel/2 : LightLevel);
-//    analogWrite(led1, LightLevel);
-    analogWrite(led1, FlagIdle ? (LightLevel*(10-SideMod))/20 : (LightLevel*(10-SideMod))/10);
+    analogWrite(led1, FlagIdle ? (LightLevel*(10+SideMod))/20 : (LightLevel*(10+SideMod))/10);
   }
 
   /* Save a tiny bit of power when turned off... */
