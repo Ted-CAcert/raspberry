@@ -1,3 +1,6 @@
 [submodule "arduino/sketchbook/hardware/damellis/attiny"]
 	path = arduino/sketchbook/hardware/damellis/attiny
 	url = https://github.com/Ted-CAcert/attiny.git
+[submodule "arduino/sketchbook/libraries/Grove_3_Axis_Digital_Gyro"]
+	path = arduino/sketchbook/libraries/Grove_3_Axis_Digital_Gyro
+	url = https://github.com/Seeed-Studio/Grove_3_Axis_Digital_Gyro.git
