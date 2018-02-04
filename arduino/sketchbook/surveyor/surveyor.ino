@@ -25,9 +25,18 @@ void setup() {
 
 void loop() {
   short Heading;
+  static long ySum;
+  static char numY = 0;
 
   Heading = (short)gyro.integrate();
-  Seg.displayNumber(Heading);
+  ySum += gyro.getLastY();
+  numY++;
+  if (numY >= 10) {
+    Seg.displayNumber(ySum/143.75);
+    numY = 0;
+    ySum = 0;
+  }
+//  Seg.displayNumber(Heading);
   get_ir_command();
   delay(10); 
 }
@@ -90,16 +99,22 @@ void get_ir_command()
       case IR_BUTTON_SETTING:
         break;
       case IR_BUTTON_9:
+        moveSpeed = 255;
         break;
       case IR_BUTTON_8:
+        moveSpeed = 200;
         break;
       case IR_BUTTON_7:
+        moveSpeed = 150;
         break;
       case IR_BUTTON_6:
+        moveSpeed = 100;
         break;
       case IR_BUTTON_5:
+        moveSpeed = 75;
         break;
       case IR_BUTTON_4:
+        moveSpeed = 50;
         break;
       case IR_BUTTON_3:
         break;
