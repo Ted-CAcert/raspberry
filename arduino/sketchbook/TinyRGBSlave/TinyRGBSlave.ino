@@ -1,4 +1,4 @@
-#include <USIWire.h>
+#include "tedi2c.h"
 
 // 7 bit slave I2C address
 const int SLAVE_ADDR = 0x8;
