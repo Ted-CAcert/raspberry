@@ -133,6 +133,9 @@ uint8_t motor_sta = STOP;
 uint8_t mode = MODE_A;
 uint8_t controlflag = IR_CONTROLER;
 
+unsigned long lastIRTime=0;
+uint8_t irRead;
+
 #define VERSION                0
 #define ULTRASONIC_SENSOR      1
 #define TEMPERATURE_SENSOR     2
@@ -303,7 +306,8 @@ void get_ir_command()
   {
     uint32_t value = ir.value;
     time = millis();
-    switch ((value >> 16) & 0xff)
+    irRead = (value >> 16) & 0xff;    
+    switch (irRead)
     {
       case IR_BUTTON_A:
         controlflag = IR_CONTROLER;
@@ -473,6 +477,7 @@ void get_ir_command()
         ChangeSpeed(factor * 3 + minSpeed);
         break;
     }
+    lastIRTime = millis();
   }
   else if((controlflag == IR_CONTROLER) && ((millis() - time) > 120))
   {
@@ -1098,16 +1103,16 @@ void readSensor(int device)
     break;
     case IRREMOTE:
     {
-//      unsigned char r = readBuffer(7);
-//      if((millis()/1000.0 - lastIRTime) > 0.2)
-//      {
-//        sendByte(0);
-//      }
-//      else
-//      {
-//        sendByte(irRead == r);
-//      }
-//      irRead = 0;
+      unsigned char r = readBuffer(7);
+      if((irRead == 0) || (millis() - lastIRTime) > 200)
+      {
+        sendByte(0);
+      }
+      else
+      {
+        sendByte(irRead == r);
+      }
+      irRead = 0;
 //      irIndex = 0;
     }
     break;
