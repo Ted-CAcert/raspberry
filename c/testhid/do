@@ -1,0 +1,3 @@
+#!/bin/sh
+gcc -I/usr/include/libusb-1.0 testhid.c -o testhid -lusb-1.0
+

@@ -1,0 +1,3 @@
+#!/bin/sh
+gcc -I/usr/include/hidapi hidtest.c -o hidtest -lhidapi-hidraw
+
