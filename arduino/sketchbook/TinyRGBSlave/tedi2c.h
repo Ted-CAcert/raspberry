@@ -4,6 +4,8 @@
 #define TWI_RX_BUFFER_SIZE (16)
 #define TWI_RX_BUFFER_MASK (TWI_RX_BUFFER_SIZE - 1)
 
+//#define TEDI2C_DEBUG
+
 // SDA must be Pin 2, the ony one supported for interrupt
 #define PIN_SDA 2
 // SCL may be any pin
