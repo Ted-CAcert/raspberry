@@ -1,5 +1,5 @@
 /* 
- *  TinyRGBSlave has been testeg on a ATTiny85 at 8MHz.
+ *  TinyRGBSlave has been tested on a ATTiny85 at 8MHz.
  *  In theory it should also run on an ATTiny25, needing less than 2k program memory and maybe 100 Bytes of RAM.
  *  
  *  The ATTiny is intended to control one strip of RGB LEDs, the RGB values can be set using TWI/I2C bus.
@@ -7,11 +7,13 @@
  *  TWI master at ~30 kHz) to control up to 112 RGB LED strips...
  *  
  *  RGB LEDs must be connected to pins PB0, PB1 and PB4, that are pins 5, 6 and 3 on the PDIP/SOIC-casing.
- *  Pin PB2 (pin 7) is the TWI SDA (data) signal, whereas PB3 is SCL (clock).
+ *  Pin PB2 (pin 7) is the TWI SDA (data) signal, whereas PB3 is SCL (clock). 
+ *  Note that you'll probably need an additional driver transistor and power supply if you want to control more 
+ *  than a single LED.
  *  
- *  Since the TWI is implemented in software the maximum frequency supported is about 50 kHz, though my tests did 
- *  use only 31 kHz ("Wire.setClock(31000);" on an Arduino). In theory the default 100 kHz should be supported if
- *  the ATTiny is clocked at 20 MHz.
+ *  Since the TWI is implemented in software the maximum TWI clock frequency supported at 8 MHz ATTiny clock is about 
+ *  50 kHz, though in my tests I normally did use only 31 kHz ("Wire.setClock(31000);" on an Arduino). 
+ *  In theory 100 kHz TWI clock should be supported if the ATTiny is clocked at 20 MHz.
  *  
  *  The device has 4 registers that can be written into by TWI:
  *  0:  PWM value for PB0
@@ -24,9 +26,9 @@
  *  values (new ID, PWM0, PWM1, PWM4).
  *  
  *  The device ID is stored in the EEPROM and therefor survive a reset or power cycle, all PWM values are 
- *  set to 0 after a reset.
+ *  set to 0 after a reset. (ToDo for next version: Allow the initial PWM values to be stored in EEPROM)
  *  
- *  Reading register contents back is not (yet?) supported by this software.
+ *  Reading register contents back is not supported by this software.
  *  
  *  The device always reacts to the broadcast address 0. This is a simple way to reset the device ID (of all 
  *  devices currently connected to the TWI bus!) if you don't know its current value, or to turn off all LEDs 

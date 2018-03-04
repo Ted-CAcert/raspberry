@@ -1,8 +1,9 @@
 /*
  * This is very basic and not portable...
- * I'm trying to avoid as much overhead as possible since I'm afraid that 8MHz won't allow
- * very much overhead when "manually" implementing 100kHz I2C. I don't guess that there's
- * any chance to get it running at 400kHz
+ * 
+ * I'm trying to avoid as much overhead as possible since for a 8MHz ATTiny clock it's very hard
+ * to support a 100kHz TWI clock frequency. In fact, using 50 kHz seem to work with occasional dropped
+ * transactions. At 31 kHz this seems to work quite reliably.
  * 
  */
  
