@@ -9,6 +9,79 @@ MeDCMotor MotorL(M1);
 MeDCMotor MotorR(M2);
 MeLineFollower lf(2);
 MeRGBLed rgb(7, 7==7?2:4);
+MeUltrasonicSensor ultra(3); // .distanceCm()
+
+#define ABSTANDHALTER
+#ifdef ABSTANDHALTER
+
+char check_ir();
+
+void setup() {}
+
+void loop() {
+  static char last_action = 0;
+  unsigned int distance;
+  char action;
+  int move_speed;
+  char r,g;
+  if (check_ir()) {
+    Seg.display("    ");
+    action = 0;
+    move_speed = 0;
+    r = 0;
+    g = 0;
+  } else {
+    distance = ultra.distanceCm();
+    Seg.displayNumber(distance);
+    if (distance < 15) {
+      action = 3;
+      move_speed = -150;
+      r = 200;
+    } else {
+      if (distance < 30) {
+        action = 2;
+        move_speed = 0;
+        r = 220;
+        g = 80;
+      } else {
+        if (distance < 50) {
+          action = 1;
+          move_speed = 150;
+          r = 100;
+          g = 200;
+        } else {
+          action = 4;
+          move_speed = 250;
+          g = 250;
+        }
+      }
+    }
+  }
+  if (action != last_action) {
+    MotorL.run(-move_speed);
+    MotorR.run(move_speed);
+    rgb.setColor(1,r,g,0);
+    rgb.setColor(2,r,g,0);
+    rgb.show();
+  }
+  last_action = action;
+  delay(10);
+}
+
+char check_ir() {
+  static char off = 1;
+  static unsigned long last = 0;
+  if (ir.decode() && ((ir.value >> 16) & 0xff) == IR_BUTTON_SETTING) {
+    if (!last) { off = !off; }
+    last = millis();
+  } else {
+    if (millis()-last > 150) {
+      last = 0;
+    }
+  }
+  return off;
+}
+#else
 
 long LastSwitch;
 char LEDStatus;
@@ -201,4 +274,4 @@ void get_ir_command()
     if (MoveStatus != 0) StopAll();
   }
 }
-
+#endif
