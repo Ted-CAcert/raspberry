@@ -15,10 +15,11 @@
  *  50 kHz, though in my tests I normally did use only 31 kHz ("Wire.setClock(31000);" on an Arduino). 
  *  In theory 100 kHz TWI clock should be supported if the ATTiny is clocked at 20 MHz.
  *  
+ *  TODO: Redo Memory Management completely!
  *  The device has 4 registers that can be written into by TWI:
- *  0:  PWM value for PB0
- *  1:  PWM value for PB1
- *  2:  PWM value for PB4
+ *  0:  PWM value for PB0 (green)
+ *  1:  PWM value for PB1 (red)
+ *  2:  PWM value for PB4 (blue)
  *  3:  New TWI device ID
  *  
  *  The address counter is incremented by 1 after each write, and reset to 0 after reachinc a value > 2.

@@ -20,11 +20,15 @@ void setup() {
   //pinMode(led1, OUTPUT);     
   //pinMode(led2, OUTPUT);
 //  mySerial.begin(9600);
+
+  // The PWM enabled pins
   pinMode(0, OUTPUT);
   pinMode(1, OUTPUT);
-  pinMode(2, OUTPUT);
-  pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
+
+  // Digital pin
+//  pinMode(2, OUTPUT);
+//  pinMode(3, OUTPUT);
 }
 
 void pulse() {
@@ -60,9 +64,35 @@ void blink()
     digitalWrite(led1, LOW);    // turn the LED off by making the voltage LOW
     delay(500);               // wait for a second  
 }
+
+void pwm()
+{
+  int i;
+  
+  for(i = 0; i < 256; i++) {
+    analogWrite(0, i);
+    delay(5);
+  }
+  analogWrite(0, 0);
+  for(i = 0; i < 256; i++) {
+    analogWrite(1, i);
+    delay(5);
+  }
+  analogWrite(1, 0);
+  
+  for(i = 0; i < 256; i++) {
+    analogWrite(4, i);
+    delay(5);
+  }
+  analogWrite(4, 0);
+
+  delay(3000);
+}
+
 // the loop routine runs over and over again forever:
 void loop() {
-  pulse();
+  pwm();
+  //pulse();
   /*mySerial.print("A");
   blink();
   mySerial.print("B"); */
