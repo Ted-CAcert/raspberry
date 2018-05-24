@@ -3,10 +3,9 @@
 /* RGB Master
  * currently this is mostly an interface between serial ASCII and TWI bus. 
  * Format of command line:
- * <DeviceID> <StartAddress high byte> <StartAddress low byte> <Value1> [ <Value2> [ <Value3> [ <Value4> ]]]
+ * <DeviceID> <Program Step Index> <Red-Value> [ <Green-Value> [ <Blue-Value> [ <Duration&Flags> ]]]
  * DeviceID 0 is broadcast, normal device IDs start are from 8 to 119
- * Semantics of StartAddress depend on the device, ATTiny24/45/85 hava 128/256/512 addresses
- * Values are from 0 to 255
+ * The Program Step Index ranges from 0 to 126 for an ATTiny85 (or from 0 to 62 on an ATTiny45). Program Step Index 255 sets the DeviceID.
  */
 
 char CmdBuffer[30];
@@ -21,7 +20,7 @@ void setup() {
 }
 
 void HandleCommand() {
-  byte Val[7];
+  byte Val[6];
   
   int CurInt = 0;
   byte CurIDX;
@@ -51,9 +50,9 @@ void HandleCommand() {
   Val[NumVals] = CurInt;
   NumVals++;
   CurInt=0;
-  
-  if (NumVals < 4) {
-    Serial.println("Too few values, syntax is <DevID> <AddrHi> <AddrLo> <Val1> ...");
+
+  if (NumVals < 3) {
+    Serial.println("Too few values, syntax is <DevID> <PSI> <Val1> ...");
     return;
   }
   

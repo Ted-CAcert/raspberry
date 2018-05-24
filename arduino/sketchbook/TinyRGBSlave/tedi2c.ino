@@ -150,7 +150,7 @@ void TWI_SendNACK() {
 void TWI_ISR()
 {  
   // Check current status of SCL
-  if (*pInRegister & bitSCL) {
+    if (*pInRegister & bitSCL) {
     if (*pInRegister & bitSDA) {
       // This is a STOP condition...
       TWI_Status = TWISTATUS_STOP;
