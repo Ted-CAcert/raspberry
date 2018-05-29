@@ -157,7 +157,9 @@ void loop() {
   }
   
   // Check for next step
-  if (millis() >= EndTick) {
+  // Special handling if step 0 has FlagDuration 0xFF, usually if there is no programm or 
+  // only a fixed value should be shown
+  if (millis() >= EndTick || millis() < StartTick) {
     CurStep.Red = EEPROM.read(CurPSI*4);
     CurStep.Green = EEPROM.read(CurPSI*4+1);
     CurStep.Blue = EEPROM.read(CurPSI*4+2);
@@ -171,7 +173,7 @@ void loop() {
     }
     
     CurPSI++;
-    if (CurPSI > MaxPSI) CurPSI = 0;
+    if (CurPSI > MaxPSI) CurPSI = 0;    
     
     NextStep.Red = EEPROM.read(CurPSI*4);
     NextStep.Green = EEPROM.read(CurPSI*4+1);
@@ -179,26 +181,33 @@ void loop() {
     NextStep.FlagDuration = EEPROM.read(CurPSI*4+3);
     
     StartTick = millis();
-    switch(CurStep.Unit) {
-      case 0:
-        EndTick = StartTick + CurStep.Amount*100;
-        break;
-
-      case 1:
-        EndTick = StartTick + CurStep.Amount*1000;
-        break;
-
-      case 2:
-        EndTick = StartTick + CurStep.Amount*10000;
-        break;
-
-      case 3:
-        EndTick = StartTick + CurStep.Amount*100000;
-        break;
-
-      default:
-        EndTick = StartTick + CurStep.Amount*2000;
-        break;
+    if (CurStep.FlagDuration == 0xff) {
+      // Can only happen if step 0 has FlagDuration 0xFF (unprogrammed EEPROM cell)
+      // ==> Make sure the step is checked regularly so a new value written here is 
+      //     quickly recognized
+      EndTick = StartTick+100;
+    } else {
+      switch(CurStep.Unit) {
+        case 0:
+          EndTick = StartTick + CurStep.Amount*100;
+          break;
+  
+        case 1:
+          EndTick = StartTick + CurStep.Amount*1000;
+          break;
+  
+        case 2:
+          EndTick = StartTick + CurStep.Amount*10000;
+          break;
+  
+        case 3:
+          EndTick = StartTick + CurStep.Amount*100000;
+          break;
+  
+        default:
+          EndTick = StartTick + CurStep.Amount*2000;
+          break;
+      }
     }
     // Handle overflow...
     if (EndTick < StartTick) EndTick = 0xFFFFFFFF;
@@ -213,7 +222,7 @@ void loop() {
     analogWrite(BLUE_PIN, CurStep.Blue);
 #endif    
     if (EndTick - millis() > 100) {
-      delay(100); // Just check every for changes every 100ms
+      delay(100); // Just check NewPSI (and maybe other things) for changes every 100ms
     } else {
       delay(EndTick - millis());
     }
@@ -225,7 +234,7 @@ void loop() {
     len = EndTick - StartTick;
     if (len < 1) len = 1;
 
-    // To avoi
+    // Due to rounding errors it's a bit more complicated than
     // CurVal = CurStep.Red + (NextStep.Red-CurStep.Red)*(millis()-StartTick)/len;
     CurVal = (millis()-StartTick);
     CurVal /= len;
