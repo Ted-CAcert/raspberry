@@ -28,20 +28,20 @@
  *  Byte 3 of a command is a bitmask:
  *  If Bit 7 (MSB) is set, the RGB values are interpolated during the duration, so they slowly approach the value set in 
  *  the next command.
- *  Bit 6-3 set the duration of the command as the amount of units (set in bits 2-0).
- *  Bit 2-0 select the unit of the duration:
+ *  Bit 6-4 select the unit of the duration:
  *    000: 10ths of seconds
  *    001: seconds
  *    010: tens of seconds
  *    011: hundreds of seconds
  *    100: thousends of seconds
  *    101 to 111: for future use
+ *  Bit 3-0 set the duration of the command as the amount of units (set in bits 2-0).
  *    
  *  If byte 3 is set to 0xFF this step is skipped and the program starts again at address 0
  *  
  *  Examples:
- *  Byte 3 of 0 0010 001 = 0x11 = 17 sets a constant RGB value for 1 seconds
- *  Byte 3 of 1 0110 100 = 0xB4 = 180 sets the RGB value changing from the value given in this command to the value given in the next command 
+ *  Byte 3 of (decimal) 1 to 15 sets a constant RGB value for 0.1 to 1.5 seconds
+ *  Byte 3 of 1 011 0110 = 0xB6 = 182 sets the RGB value changing from the value given in this command to the value given in the next command 
  *    during 600 seconds
  *  
  *  
@@ -70,8 +70,8 @@ typedef struct {
   union {
     uint8_t FlagDuration;
     struct {
-      unsigned Unit:3;
       unsigned Amount:4;
+      unsigned Unit:3;
       unsigned Flag:1;
     };
   };
@@ -81,7 +81,7 @@ typedef struct {
 #define GREEN_PIN 0
 #define BLUE_PIN 4
 
-#define DEBUG
+//#define DEBUG
 
 // 7 bit slave I2C address
 int SLAVE_ADDR;
