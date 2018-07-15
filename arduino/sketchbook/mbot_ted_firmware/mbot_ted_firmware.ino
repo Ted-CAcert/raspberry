@@ -1263,6 +1263,7 @@ void loop()
 {
   while(1)
   {
+    Serial.println(ultr.distanceCm(400));
     get_ir_command();
     serialHandle();
     currentPressed = !(analogRead(7) > 100);
