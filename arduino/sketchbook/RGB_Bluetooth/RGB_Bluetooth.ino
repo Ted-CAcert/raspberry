@@ -97,11 +97,16 @@ void printHex(const uint8_t * data, const uint32_t numBytes);
 // the packet buffer
 extern uint8_t packetbuffer[];
 
+unsigned long LastBattTick = 0;
+int DelayTime;
 uint8_t mode;
 int8_t offset;
 uint8_t red = 0;
 uint8_t green = 0;
 uint8_t blue = 0;
+
+bool BattLow;
+uint8_t PixArray[NUMPIXELS];
 
 /**************************************************************************/
 /*!
@@ -111,9 +116,12 @@ uint8_t blue = 0;
 /**************************************************************************/
 void setup(void)
 {
-  //while (!Serial);  // required for Flora & Micro
+//  while (!Serial);  // required for Flora & Micro
   delay(500);
 
+  pinMode(10, OUTPUT);
+  digitalWrite(10, LOW);
+  
   // turn off neopixel
   pixel.begin(); // This initializes the NeoPixel library.
   for(uint8_t i=0; i<NUMPIXELS; i++) {
@@ -148,6 +156,10 @@ void setup(void)
   /* Disable command echo from Bluefruit */
   ble.echo(false);
 
+  if (! ble.sendCommandCheckOK(F( "AT+GAPDEVNAME=Teddys BLE 1" )) ) {
+    error(F("Could not set device name?"));
+  }
+
   Serial.println("Requesting Bluefruit info:");
   /* Print Bluefruit information */
   ble.info();
@@ -180,20 +192,69 @@ void setup(void)
 /**************************************************************************/
 void loop(void)
 {
-  if (mode == 2) {
-    offset++;
-    if (offset > 3) offset = 0;
-  } else if (mode == 3) {
-    offset--;
-    if (offset < 0) offset = 3;
+  uint8_t i;
+
+  if (LastBattTick == 0 || LastBattTick > millis() || LastBattTick+10000 < millis()) {
+    float measuredvbat = analogRead(A9);
+    
+    measuredvbat *= 2; // we divided by 2, so multiply back
+    measuredvbat *= 3.3; // Multiply by 3.3V, our reference voltage
+    measuredvbat /= 1024; // convert to voltage
+    ble.print("VBat: " ); ble.print(measuredvbat);
+    if (measuredvbat <= 3) {
+      ble.println("!");
+      BattLow = true; 
+    } else {
+      ble.println("");
+      BattLow = false;
+    }
+    
+    LastBattTick = millis();
   }
-  for(uint8_t i=0; i<NUMPIXELS; i++) {
-    if (i%4 == offset) 
-      pixel.setPixelColor(i, pixel.Color(red,green,blue));
-    else
+
+  if (BattLow) {
+    // Shut down 
+    for(i=0; i<NUMPIXELS; i++) {
       pixel.setPixelColor(i, pixel.Color(0,0,0));
+    }
+  } else {
+    if (mode == 2) {
+      offset++;
+      if (offset > 3) offset = 0;
+    } else if (mode == 3) {
+      offset--;
+      if (offset < 0) offset = 3;
+    } else if (mode == 4) {
+      offset++;
+      if (offset >= NUMPIXELS) offset = 0;
+    }
+  
+    if (mode == 4) {
+      for(i=0; i<NUMPIXELS; i++) {
+        if (i == offset) 
+          PixArray[i] = 0xff;
+        else {
+          //PixArray[i] = 0;
+          PixArray[i] >>= 1;  
+        }
+        pixel.setPixelColor(i, pixel.Color((red*PixArray[i])/0xFF,(green*PixArray[i])/0xFF,(blue*PixArray[i])/0xFF));
+      }
+    } else {
+      for(i=0; i<NUMPIXELS; i++) {
+        if (i%4 == offset) 
+          pixel.setPixelColor(i, pixel.Color(red,green,blue));
+        else
+          pixel.setPixelColor(i, pixel.Color(0,0,0));
+      }
+    }
   }
   pixel.show(); // This sends the updated pixel color to the hardware.
+
+  if (BattLow) {
+    delay(10000);
+  } else {
+    delay(DelayTime);
+  }
 
   /* Wait for new data to arrive */
   uint8_t len = readPacket(&ble, BLE_READPACKET_TIMEOUT);
@@ -219,15 +280,28 @@ void loop(void)
     if (packetbuffer[2] == '1' && packetbuffer[3] == '0') {
       mode = 1;
       offset = 0;
+      DelayTime = 50;
     } else if (packetbuffer[2] == '2' && packetbuffer[3] == '0') {
       mode = 2;
       offset = 0;
+      DelayTime = 50;
     } else if (packetbuffer[2] == '3' && packetbuffer[3] == '0') {
       mode = 3;
       offset = 0;
+      DelayTime = 50;
     } else if (packetbuffer[2] == '4' && packetbuffer[3] == '0') {
       mode = 4;
       offset = 0;
+      DelayTime = 50;
+    } else if (packetbuffer[2] == '5' && packetbuffer[3] == '0') {
+      // Pfeil nach oben
+      DelayTime += 20;
+    } else if (packetbuffer[2] == '6' && packetbuffer[3] == '0') {
+      // Pfeil nach unten
+      if (DelayTime > 20) DelayTime -= 20;
+    } else {
+      Serial.print("Unknown: ");
+      Serial.println((char *)packetbuffer);
     }
   } else {
     Serial.print("Unknown: ");
