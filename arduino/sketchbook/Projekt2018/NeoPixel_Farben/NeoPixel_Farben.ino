@@ -60,5 +60,5 @@ void loop() {
   pixel.show();
   Counter++;
 
-  delay(10);
+  delay(3);
 }
