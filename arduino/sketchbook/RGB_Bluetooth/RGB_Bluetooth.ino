@@ -58,7 +58,8 @@
     #define FACTORYRESET_ENABLE     1
 
     #define PIN                     5
-    #define NUMPIXELS               16
+//    #define NUMPIXELS               16
+    #define NUMPIXELS               7
 /*=========================================================================*/
 
 Adafruit_NeoPixel pixel = Adafruit_NeoPixel(NUMPIXELS, PIN);
@@ -116,7 +117,7 @@ uint8_t PixArray[NUMPIXELS];
 /**************************************************************************/
 void setup(void)
 {
-//  while (!Serial);  // required for Flora & Micro
+  while (!Serial);  // required for Flora & Micro
   delay(500);
 
   pinMode(10, OUTPUT);
@@ -240,8 +241,8 @@ void loop(void)
         pixel.setPixelColor(i, pixel.Color((red*PixArray[i])/0xFF,(green*PixArray[i])/0xFF,(blue*PixArray[i])/0xFF));
       }
     } else {
-      for(i=0; i<NUMPIXELS; i++) {
-        if (i%4 == offset) 
+      for(i=1; i<NUMPIXELS; i++) {
+        if (i%2 == offset%2) 
           pixel.setPixelColor(i, pixel.Color(red,green,blue));
         else
           pixel.setPixelColor(i, pixel.Color(0,0,0));

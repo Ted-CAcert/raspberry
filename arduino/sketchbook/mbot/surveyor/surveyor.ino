@@ -11,7 +11,7 @@ MeLineFollower lf(2);
 MeRGBLed rgb(7, 7==7?2:4);
 MeUltrasonicSensor ultra(3); // .distanceCm()
 
-#define ABSTANDHALTER
+//#define ABSTANDHALTER
 #ifdef ABSTANDHALTER
 
 char check_ir();

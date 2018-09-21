@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<dd35:PCExport xmlns="http://www.adamczak.com/Andy" xmlns:dd35="http://www.adamczak.com/Andy/D&amp;D">
+  <dd35:Info />
+  <dd35:PCs>
+    <dd35:PC name="Ea" playerName="Felix" v="9" type="Humanoid" subtype="Human">
+      <dd35:Stats race="Human" gender="f" alignment="n" deity="" age="18" weight="150" height="60" eyes="" hair="" skin="" xp="600" size="m" hd="0" hitDie="8" levelAdj="0">
+        <dd35:Attributes s="9" d="13" c="11" i="13" w="15" ch="10" />
+        <dd35:Saves />
+        <dd35:AC />
+        <dd35:Movement>
+          <dd35:Move name="Walk" at="ex" ls="30" ms="20" hs="20" />
+        </dd35:Movement>
+        <dd35:Skills>
+          <dd35:Skill name="Diplomacy" ranks="4" />
+          <dd35:Skill name="Handle Animal" ranks="4" />
+          <dd35:Skill name="Heal" ranks="4" />
+          <dd35:Skill name="Knowledge" subskill="nature" ranks="4" />
+          <dd35:Skill name="Spellcraft" ranks="4" />
+          <dd35:Skill name="Survival" ranks="4" />
+        </dd35:Skills>
+        <dd35:Feats>
+          <dd35:Feat name="Armor Proficiency (Light)" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Armor Proficiency (Medium)" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Improved Initiative" st="4" />
+          <dd35:Feat name="Martial Weapon Proficiency" appliesTo="Scimitar" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Shield Proficiency" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Simple Weapon Proficiency" appliesTo="Club" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Simple Weapon Proficiency" appliesTo="Dagger" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Simple Weapon Proficiency" appliesTo="Dart" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Simple Weapon Proficiency" appliesTo="Quarterstaff" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Simple Weapon Proficiency" appliesTo="Shortspear" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Simple Weapon Proficiency" appliesTo="Sickle" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Simple Weapon Proficiency" appliesTo="Sling" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Simple Weapon Proficiency" appliesTo="Spear" st="2" cl="1" cName="Druid" />
+          <dd35:Feat name="Track" />
+        </dd35:Feats>
+        <dd35:Classes>
+          <dd35:Class type="ra" name="Racial" level="0" r="t">
+            <dd35:Stats>
+              <dd35:AbilityChoices>
+                <dd35:Choice id="0" a="bonusFeat" at="2" cid="0" l="0" c="Improved Initiative" />
+              </dd35:AbilityChoices>
+            </dd35:Stats>
+          </dd35:Class>
+          <dd35:Class type="cl" name="Druid" level="1">
+            <dd35:Stats>
+              <dd35:AbilityChoices />
+            </dd35:Stats>
+          </dd35:Class>
+        </dd35:Classes>
+        <dd35:Abilities nID="0">
+          <dd35:Ability id="0" st="2">
+            <dd35:Info id="0" type="bonusFeat" at="ex" info1="sf" info2="Improved Initiative" />
+          </dd35:Ability>
+          <dd35:Ability id="0" st="4" cl="1" icli="t" cName="Druid">
+            <dd35:Info id="0" type="special" at="ex" info1="Animal Companion" />
+          </dd35:Ability>
+          <dd35:Ability id="1" st="4" cl="1" icli="t" cName="Druid">
+            <dd35:Info id="0" type="special" at="ex" info1="Nature Sense" />
+          </dd35:Ability>
+          <dd35:Ability id="14" st="4" cl="1" icli="t" cName="Druid">
+            <dd35:Info id="0" type="special" at="ex" info1="Spontaneous Casting">
+              <dd35:Effects override="t">
+                <dd35:Items>
+                  <dd35:Item id="0" effect="spontaneousCasting" i1="sg" i2="Summon Nature's Ally Spells" v="0" />
+                </dd35:Items>
+                <dd35:Groups />
+              </dd35:Effects>
+            </dd35:Info>
+          </dd35:Ability>
+          <dd35:Ability id="5" st="4" cl="1" icli="t" cName="Druid">
+            <dd35:Info id="0" type="special" at="ex" info1="Wild Empathy" />
+          </dd35:Ability>
+        </dd35:Abilities>
+        <dd35:NaturalAttacks />
+        <dd35:AttackOptions>
+          <dd35:Attack>
+            <dd35:Item>
+              <dd35:Primary>
+                <dd35:AO w="t" c="1" />
+              </dd35:Primary>
+            </dd35:Item>
+          </dd35:Attack>
+          <dd35:Full>
+            <dd35:Item>
+              <dd35:Primary>
+                <dd35:AO w="t" c="1" />
+              </dd35:Primary>
+            </dd35:Item>
+          </dd35:Full>
+        </dd35:AttackOptions>
+        <dd35:LevelInfos>
+          <dd35:LevelInfo level="1" classLevel="1" type="cl" className="Druid" hp="8" hd="8" />
+        </dd35:LevelInfos>
+        <dd35:Languages>
+          <dd35:Language name="Common" u="t" s="t" c="0" />
+          <dd35:Language name="Druidic" u="t" s="t" />
+          <dd35:Language name="Sylvan" u="t" s="t" />
+        </dd35:Languages>
+        <dd35:Morphology v="1">
+          <dd35:BodyParts heads="1" arms="2" legs="2" hands="2" claws="0" wings="0" tails="0" fins="0" tentacles="0" eyes="2" mouths="1" horns="0" tusks="0" antennae="0" beaks="0" stalks="0" stingers="0" />
+          <dd35:Wielding ph="1" oh="1" />
+        </dd35:Morphology>
+        <dd35:ActiveState>
+          <dd35:AM t="0" />
+          <dd35:Active />
+          <dd35:PreparedSpells>
+            <dd35:Class name="Druid">
+              <dd35:List name="" c="t">
+                <dd35:Spells>
+                  <dd35:Spell max="1" cur="1" name="Detect Poison" lv="0" sl="0" />
+                  <dd35:Spell max="1" cur="1" name="Light" lv="0" sl="0" />
+                  <dd35:Spell max="1" cur="1" name="Read Magic" lv="0" sl="0" />
+                  <dd35:Spell max="1" cur="1" name="Cure Light Wounds" lv="1" sl="1" />
+                  <dd35:Spell max="1" cur="1" name="Magic Fang" lv="1" sl="1" />
+                </dd35:Spells>
+              </dd35:List>
+            </dd35:Class>
+          </dd35:PreparedSpells>
+        </dd35:ActiveState>
+        <dd35:Description>Wolf als Companion</dd35:Description>
+        <dd35:Gear nID="175" gb="" gic="t" es="">
+          <dd35:Item v="3" id="173" name="Arrow" type="ammo" size="m" c="20">
+            <dd35:Ammo />
+          </dd35:Item>
+          <dd35:Item v="3" id="174" name="Leather" type="armor" size="m" c="1" e="t">
+            <dd35:Armor />
+          </dd35:Item>
+          <dd35:Item v="3" id="172" name="Longbow" type="weapon" size="m" c="1">
+            <dd35:Weapon />
+          </dd35:Item>
+          <dd35:Item v="3" id="171" name="Scimitar" type="weapon" size="m" c="1" e="t">
+            <dd35:Weapon />
+          </dd35:Item>
+        </dd35:Gear>
+        <dd35:CombatInfo />
+      </dd35:Stats>
+      <dd35:History created="63663461682" />
+    </dd35:PC>
+  </dd35:PCs>
+</dd35:PCExport>

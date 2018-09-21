@@ -1,11 +1,12 @@
 #include <OneWire.h>
  
-OneWire ow(2);
+OneWire ow(5);
 byte address[8];
  
 void setup(void)
 {
   Serial.begin(9600);
+  delay(10000);
   lookUpSensors();
 }
  
