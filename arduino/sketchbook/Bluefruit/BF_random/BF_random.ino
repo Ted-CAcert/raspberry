@@ -124,6 +124,12 @@ void loop() {
   uint32_t TheRandom;
   
   Serial.println("Tick...");
+  TheRandom=0;
+  if (! ble.sendCommandWithIntReply(F( "AT+HWRANDOM" ), &TheRandom) ) {
+    error(F("Error?"));
+  }
+
+  Serial.println(TheRandom);
   delay(10000);
 
   TheRandom=0;
