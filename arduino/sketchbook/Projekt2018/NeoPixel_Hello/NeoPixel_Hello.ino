@@ -15,8 +15,7 @@
 // Konstante, über welches "Beinchen" werden die Daten geschickt
 const int DatenPin = 5;
 // Konstante, Anzahl angeschlossener Pixel
-const int AnzahlPixel = 3;
-
+const int AnzahlPixel = 20;
 // Objekt zum Steuern der Pixel
 Adafruit_NeoPixel pixel = Adafruit_NeoPixel(AnzahlPixel, DatenPin);
 

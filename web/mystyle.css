@@ -1,0 +1,39 @@
+.label-1 {
+  border-top: 1px dotted black;
+  font-size: x-small;
+}
+
+.box-1 {
+  border: 1px solid black;
+}
+
+.box-1 .row {
+  padding-right: 5%;
+  padding-left: 5%;
+}
+
+.player {
+  padding-bottom: 1em;
+}
+
+.stats-block {
+  margin-top: 2em;
+}
+
+.stats-block .rowtitle {
+  font-size: x-small;
+}
+
+.stat-title {
+  background-color: black;
+  color: white;
+}
+
+.stat-title .subtitle {
+  font-size: xx-small;
+}
+
+.stat-title .title {
+  font-weight: 900;
+  text-align: center;
+}

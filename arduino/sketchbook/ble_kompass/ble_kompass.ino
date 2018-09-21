@@ -2,13 +2,31 @@
 
 
 // Reference the I2C Library
-#include <Wire.h>
+//#include <Wire.h>
 // Reference the HMC5883L Compass Library
+#include "Adafruit_BLE.h"
+#include "Adafruit_BluefruitLE_SPI.h"
+#include "Adafruit_BluefruitLE_UART.h"
+#if SOFTWARE_SERIAL_AVAILABLE
+  #include <SoftwareSerial.h>
+#endif
+
+#include "BluefruitConfig.h"
 #include <HMC5883L.h>
 
 // Store our compass as a variable.
 HMC5883L compass;
+Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST);
+
 // Record any errors that may occur in the compass.
+// function prototypes over in packetparser.cpp
+uint8_t readPacket(Adafruit_BLE *ble, uint16_t timeout);
+float parsefloat(uint8_t *buffer);
+void printHex(const uint8_t * data, const uint32_t numBytes);
+
+// the packet buffer
+extern uint8_t packetbuffer[];
+
 int error = 0;
 
 // Out setup routine, here we will configure the microcontroller and compass.
@@ -31,6 +49,13 @@ delay(10000);
   error = compass.setMeasurementMode(MEASUREMENT_CONTINUOUS); // Set the measurement mode to Continuous
   if(error != 0) // If there is an error, print it out.
     Serial.println(compass.getErrorText(error));
+
+  /* Disable command echo from Bluefruit */
+  ble.echo(false);
+
+  if (! ble.sendCommandCheckOK(F( "AT+GAPDEVNAME=Teddys BLE 1" )) ) {
+    error(F("Could not set device name?"));
+  }
 }
 
 void loop() {
@@ -61,12 +86,12 @@ void loop() {
   }
   Wire.endTransmission();
   
-  Serial.print(b.Val.X);
-  Serial.print("\t");
-  Serial.print(b.Val.Y);
-  Serial.print("\t");
-  Serial.print(b.Val.Z);
-  Serial.print("\n");
+  ble.print(b.Val.X);
+  ble.print("\t");
+  ble.print(b.Val.Y);
+  ble.print("\t");
+  ble.print(b.Val.Z);
+  ble.print("\n");
   
-  delay(100);
+  delay(5000);
 }

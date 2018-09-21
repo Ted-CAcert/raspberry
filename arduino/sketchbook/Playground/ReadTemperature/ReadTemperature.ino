@@ -7,6 +7,7 @@ bool FoundDevice;
 void setup(void)
 {
   Serial.begin(9600);
+  delay(10000);
   lookUpSensors();
 }
  
