@@ -66,7 +66,7 @@
 #endif
 
 // Configure which pins to use:
-#define BLUEFRUIT
+//#define BLUEFRUIT
 // The standard pin configuration.
 #ifndef ARDUINO_HOODLOADER2 
 
@@ -117,7 +117,7 @@
 #endif
 
 #ifndef PIN_SCK
-#define PIN_SCK 	SCK
+#define PIN_SCK   SCK
 #endif
 
 // Force bitbanged SPI if not using the hardware SPI pins:
@@ -224,8 +224,25 @@ static BitBangedSPI SPI;
 
 #endif
 
+void fastbeat() {
+  static int Status=0;
+  static unsigned long last_time = 0;
+  unsigned long now = millis();
+  if ((now - last_time) < 100)
+    return;
+
+  last_time=now;
+  if (Status==0) {
+    Status = 1;
+    analogWrite(LED_HB, 32);
+  } else {
+    Status = 0;
+    analogWrite(LED_HB, 0);
+  }
+}
+
 void setup() {  
-  while (!Serial);
+  while (!SERIAL) fastbeat();
   delay(500);
     
   SERIAL.begin(BAUDRATE);

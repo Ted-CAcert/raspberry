@@ -2,6 +2,7 @@
  
 OneWire ow(2);
 byte address[8];
+bool FoundDevice;
  
 void setup(void)
 {
@@ -15,6 +16,7 @@ void lookUpSensors()
   byte ok = 0, tmp = 0;
  
   Serial.println("--Suche gestartet--");
+  FoundDevice = false;
   while (ow.search(address))
   {
     tmp = 0;
@@ -68,6 +70,7 @@ void lookUpSensors()
         }
         Serial.println("");
         ok = 1;
+        FoundDevice = true;
       }
     }//end if tmp
   }//end while
@@ -83,7 +86,7 @@ float ReadTemperature(byte addr[8])
   byte data[12];
   int i;
   int HighByte, LowByte, TReading, SignBit, Tc_100, Whole, Fract;
-  
+
   ow.reset();
   ow.select(addr);
   ow.write(0x44, 1);
@@ -114,8 +117,13 @@ void loop(void)
 {
   float TheTemp;
   
-  TheTemp = ReadTemperature(address);
-  Serial.print(TheTemp, 1);
-  Serial.println(" °C");
+  if (FoundDevice) {
+    TheTemp = ReadTemperature(address);
+    Serial.print(TheTemp, 1);
+    Serial.println(" °C");
+  } else {
+    delay(5000);
+    lookUpSensors();
+  }
 }
 
