@@ -431,3 +431,12 @@ fmuls_f:
 .endfunc
 
 #endif // __AVR__
+
+#ifdef __SAMD21G18A__
+.cpu cortex-m0plus
+.fpu softvfp
+#endif
+
+#ifdef NRF52840_XXAA
+.cpu cortex-m4
+#endif
