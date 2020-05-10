@@ -15,6 +15,9 @@
 #define MODE_T_ON 3
 #define MODE_T_OFF 4
 
+// Zuletzt installierte Version: 0001
+#define VERSION "                0001"
+
 //LiquidCrystal lcd(2, 3, 4,  8, 9, 10, 11, 12, 13, 5, 6);
 LiquidCrystal lcd(8, 7, 6,   4, 3, 12, 13);
 OneWire ow(9);
@@ -42,7 +45,7 @@ unsigned long LastPumpRun;
 unsigned long LastLoop = 0;
 int WantedPumpState = 0;
 int LastPush = 0;
-unsigned long RemainingTemp = 0;
+unsigned long RemainingTemp = 0; // In milliseconds
 
 struct Status_Struct {
   byte CurMode;
@@ -347,7 +350,7 @@ void PrintMenu()
   }
   if (CurMenu < 3) {
     lcd.setCursor(0, 3);
-    lcd.print("                    ");
+    lcd.print(VERSION);
   }
 }
 
@@ -456,9 +459,9 @@ void HandleMenu(int SelChange)
     } else if (CurMenu == 2) {
       if (CurItem1 == 3 || CurItem1 == 4) {
         if (CurItem2 < NumMenu2_34) {
-          RemainingTemp = (CurItem2+1) * 36000000;
+          RemainingTemp = (CurItem2+1) * 3600000;
           Status.CurMode = CurItem1;
-          /* Do not StoreStatus for temorary modes */
+          /* No StoreStatus for temorary modes */
         }
         CurMenu = 1;
         CurItem1 = 0;
@@ -655,7 +658,8 @@ void CalcPump(float TempW, float TempK)
 
 // Set pump activity according to WantedPumpState
 // Do not change pump activity if last change is less then 5 seconds before,
-// just to make sure the motor is not damaged...
+// to make sure the motor is not damaged (not sure if this is necessary,
+// just being on the safe side)...
 void SetPump()
 {
   if (millis() - LastPumpChange > 5000) {
