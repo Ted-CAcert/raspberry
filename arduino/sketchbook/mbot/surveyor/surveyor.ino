@@ -11,12 +11,21 @@ MeLineFollower lf(2);
 MeRGBLed rgb(7, 7==7?2:4);
 MeUltrasonicSensor ultra(3); // .distanceCm()
 
-//#define ABSTANDHALTER
+#define ABSTANDHALTER
 #ifdef ABSTANDHALTER
+
+//#define NO_MOVE
 
 char check_ir();
 
-void setup() {}
+void setup() {
+  Buzzer.tone(400, 200);
+  Serial.begin(9600);
+  Seg.displayNumber(0);
+  rgb.setColor(1,0,10,0);
+  rgb.setColor(2,0,0,0);
+  rgb.show();
+}
 
 void loop() {
   static char last_action = 0;
@@ -24,47 +33,57 @@ void loop() {
   char action;
   int move_speed;
   char r,g;
-  if (check_ir()) {
-    Seg.display("    ");
-    action = 0;
-    move_speed = 0;
-    r = 0;
-    g = 0;
-  } else {
-    distance = ultra.distanceCm();
-    Seg.displayNumber(distance);
-    if (distance < 15) {
-      action = 3;
-      move_speed = -150;
-      r = 200;
-    } else {
-      if (distance < 30) {
-        action = 2;
-        move_speed = 0;
-        r = 220;
-        g = 80;
+
+  switch(check_ir()) {
+    case 1:
+      Seg.display("    ");
+      action = 0;
+      move_speed = 0;
+      r = 0;
+      g = 0;
+      MotorL.run(0);
+      MotorR.run(0);
+      break;
+
+    case 0:
+      distance = ultra.distanceCm();
+      Seg.displayNumber(distance);
+      if (distance < 15) {
+        action = 3;
+        move_speed = -150;
+        r = 200;
       } else {
-        if (distance < 50) {
-          action = 1;
-          move_speed = 150;
-          r = 100;
-          g = 200;
+        if (distance < 30) {
+          action = 2;
+          move_speed = 0;
+          r = 220;
+          g = 80;
         } else {
-          action = 4;
-          move_speed = 250;
-          g = 250;
+          if (distance < 50) {
+            action = 1;
+            move_speed = 150;
+            r = 100;
+            g = 200;
+          } else {
+            action = 4;
+            move_speed = 250;
+            g = 250;
+          }
         }
       }
+    #ifndef NO_MOVE  
+      if (action != last_action) {
+        MotorL.run(-move_speed);
+        MotorR.run(move_speed);
+      }
+    #endif  
+      last_action = action;
+      break;
     }
-  }
-  if (action != last_action) {
-    MotorL.run(-move_speed);
-    MotorR.run(move_speed);
-    rgb.setColor(1,r,g,0);
-    rgb.setColor(2,r,g,0);
-    rgb.show();
-  }
-  last_action = action;
+    
+  rgb.setColor(1,r,g,0);
+  rgb.setColor(2,r,g,0);
+  rgb.show();
   delay(10);
 }
 
@@ -72,7 +91,14 @@ char check_ir() {
   static char off = 1;
   static unsigned long last = 0;
   if (ir.decode() && ((ir.value >> 16) & 0xff) == IR_BUTTON_SETTING) {
-    if (!last) { off = !off; }
+    Buzzer.tone(400, 200);
+    if (!last) {
+      if (off) {
+        off = 0;
+      } else {
+        off = 1; 
+      }
+    }
     last = millis();
   } else {
     if (millis()-last > 150) {

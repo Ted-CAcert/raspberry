@@ -13,8 +13,9 @@
 #define NUMPIXELS 64 // Number of LEDs in strip
 
 // Here's how to control the LEDs from any two pins:
-#define DATAPIN    5
-#define CLOCKPIN   4
+// With FeatherISP+: Data 6, Clock 5
+#define DATAPIN    6
+#define CLOCKPIN   5
 Adafruit_DotStar strip = Adafruit_DotStar(
   NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
 // The last parameter is optional -- this is the color data order of the
@@ -107,4 +108,3 @@ void loop() {
     if (color_list[colindex] == 0) colindex=0;
   }
 }
-
